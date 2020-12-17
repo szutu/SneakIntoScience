@@ -9,7 +9,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 //import com.badlogic.gdx.graphics.g3d.particles.ResourceData.AssetData;
 import com.badlogic.gdx.graphics.g2d.BitmapFont; //
 import com.badlogic.gdx.graphics.g2d.Sprite;
-//import com.badlogic.gdx.Input;
+import com.badlogic.gdx.Input.*;
+//import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Input.TextInputListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.math.Vector2;
@@ -25,7 +26,8 @@ public class Sis extends ApplicationAdapter {
 	private Vector2 kropkaPosition;
 	private float timer=0.1f;
 	private int num =3;
-	private boolean u,d,r=true,l; 
+	private boolean u,d,r=true,l;
+	
 	@Override
 	public void create () {
 		
@@ -45,7 +47,7 @@ public class Sis extends ApplicationAdapter {
 			
 			position.add(new Vector2(50+i*10, 50));
 		}
-		
+		kropkaPosition = new Vector2(100,100);
 		
 		
 	}
@@ -66,9 +68,65 @@ public class Sis extends ApplicationAdapter {
 		}
 		
 	}
+	private void checkDot() {
+		
+		if(position.get(0).x==kropkaPosition.x&&position.get(0).y==kropkaPosition.y) {
+			int x=(int)(Math.random()*50)*10;
+			int y=(int)(Math.random()*50)*10;
+			kropkaPosition.x=x;
+			kropkaPosition.y=y;
+			position.add(new Vector2(position.get(position.size-1).x,position.get(position.size-1).y));
+			
+		}
+	}
 	private void movement() {
 		
+		for(int i=position.size-1;i>0;i--) {
+			position.get(i).x=position.get(i-1).x;
+			position.get(i).y=position.get(i-1).y;
+		}
 		
+		if(u)
+		{
+			position.get(0).y+=10;
+		}
+		if(d){
+			position.get(0).y-=10;
+		}
+		if(r){
+			position.get(0).x+=10;
+		}
+		if(l){
+			position.get(0).x-=10;
+		}
+	}
+	
+	private void input() {
+		if(Gdx.input.isKeyJustPressed(Keys.UP)) {
+			u=true;
+			d=false;
+			r=false;
+			l=false;
+		}
+		
+		if(Gdx.input.isKeyJustPressed(Keys.DOWN)) {
+			u=false;
+			d=true;
+			r=false;
+			l=false;
+		}
+		if(Gdx.input.isKeyJustPressed(Keys.LEFT)) {
+			u=false;
+			d=false;
+			r=false;
+			l=true;
+		}
+		if(Gdx.input.isKeyJustPressed(Keys.RIGHT)) {
+			u=false;
+			d=false;
+			r=true;
+			l=false;
+		}
 	}
 	@Override
 	public void render () {
@@ -80,18 +138,23 @@ public class Sis extends ApplicationAdapter {
 		batch.begin();
 		sprite.draw(batch);
 		batch.end();
+		
 		batch.begin();
 		for(int i=0; i<position.size;i++ ) {
 			
 			batch.draw(glowa, position.get(i).x, position.get(i).y);
 		}
+		batch.draw(kropka, kropkaPosition.x, kropkaPosition.y);
 		batch.end();
+		update(Gdx.graphics.getDeltaTime());
+		input();
+		checkDot();
 		
 	}
 	
 	@Override
 	public void dispose () {
 		batch.dispose();
-		img.dispose();
+		
 	}
 }
