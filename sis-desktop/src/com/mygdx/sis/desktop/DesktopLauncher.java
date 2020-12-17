@@ -10,8 +10,8 @@ public class DesktopLauncher {
 		
 		 config.title = "SneakIntoScience";   //
 		 config.resizable= false;			//
-	        config.width = 800;			  //
-	        config.height = 640;			 //
+	        config.width = 720;			  //
+	        config.height = 480;			 //
 	        new LwjglApplication(new Sis(), config);
 	}
 }
