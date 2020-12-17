@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g3d.particles.ResourceData.AssetData;
 import com.badlogic.gdx.graphics.g2d.BitmapFont; //
 import com.badlogic.gdx.graphics.g2d.Sprite;
 //import com.badlogic.gdx.Input;
@@ -21,13 +22,14 @@ public class Sis extends ApplicationAdapter {
 	
 	@Override
 	public void create () {
+		
 		batch = new SpriteBatch();
-		img = new Texture("badlogic.jpg");
-		//logo = new Texture("Snake_logo.png");
+		img = new Texture("Snake_logo.png");
+		//logo = new Texture("SneakIntoScience_projekt_2.png");
 		font = new BitmapFont();
 		font.setColor(Color.VIOLET);
 		sprite = new Sprite(img);
-		sprite.setPosition(50, 50);
+		sprite.setPosition(0, 0);
 		listener = new MyTextInputListener();
 		Gdx.input.getTextInput(listener,"Witaj w grze!",null,"Twoje imie");;
 	
@@ -49,7 +51,7 @@ public class Sis extends ApplicationAdapter {
 		Gdx.gl.glClearColor(1, 1, 1, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
-		font.draw(batch, "Witaj w grze SneakIntoScience", 280, 440);
+		font.draw(batch, "Witaj w grze SneakIntoScience", 280, 460);
 		batch.end();
 		batch.begin();
 		sprite.draw(batch);
