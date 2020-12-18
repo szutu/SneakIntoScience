@@ -2,6 +2,7 @@ package com.mygdx.sis.desktop;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
+import com.mygdx.sis.Menu;
 import com.mygdx.sis.Sis;
 
 public class DesktopLauncher {
@@ -10,10 +11,9 @@ public class DesktopLauncher {
 		
 		 config.title = "SneakIntoScience";   //
 		 config.resizable= false;			//
-	        config.width = 720;			  //
-	        config.height = 480;			 //
-	        new LwjglApplication(new Sis(), config);
-	      //  new LwjglApplication(new Sis(), config);
-	        
+	        config.width = 600;			  //
+	        config.height = 600;			 //
+	       new LwjglApplication(new Sis(), config);
+	       
 	}
 }

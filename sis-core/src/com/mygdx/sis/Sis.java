@@ -21,12 +21,14 @@ public class Sis extends ApplicationAdapter {
 	BitmapFont font;
 	Sprite sprite;
 	TextInputListener listener;
-	Texture kropka, glowa;
+	Texture kropka, glowa,kropka2;
 	private Array<Vector2>position;
 	private Vector2 kropkaPosition;
+	private Vector2 kropka2Position; //
 	private float timer=0.1f;
 	private int num =3;
 	private boolean u,d,r=true,l;
+	private int points =-1;
 	
 	@Override
 	public void create () {
@@ -42,12 +44,17 @@ public class Sis extends ApplicationAdapter {
 		Gdx.input.getTextInput(listener,"Witaj w grze!",null,"Twoje imie");;
 		glowa = new Texture("glowa.png");
 		kropka = new Texture("kropka.png");
+		kropka2 = new Texture("kropka2.png");
 		position = new Array<Vector2>();
 		for (int i=0;i<num;i++) {
 			
 			position.add(new Vector2(50+i*10, 50));
 		}
-		kropkaPosition = new Vector2(100,100);
+
+			kropkaPosition = new Vector2(250,250);
+			kropka2Position = new Vector2(50,50);
+
+		
 		
 		
 	}
@@ -73,11 +80,31 @@ public class Sis extends ApplicationAdapter {
 		if(position.get(0).x==kropkaPosition.x&&position.get(0).y==kropkaPosition.y) {
 			int x=(int)(Math.random()*50)*10;
 			int y=(int)(Math.random()*50)*10;
+			int x2=(int)(Math.random()*50)*10;
+			int y2=(int)(Math.random()*50)*10;
 			kropkaPosition.x=x;
 			kropkaPosition.y=y;
+			kropka2Position.x=x2;
+			kropka2Position.y=y2;
+			points++;
+			position.add(new Vector2(position.get(position.size-1).x,position.get(position.size-1).y));
+	
+			
+		}
+		if(position.get(0).x==kropka2Position.x&&position.get(0).y==kropka2Position.y) {
+			int x2=(int)(Math.random()*50)*10;
+			int y2=(int)(Math.random()*50)*10;
+			int x=(int)(Math.random()*50)*10;
+			int y=(int)(Math.random()*50)*10;
+			kropkaPosition.x=x;
+			kropkaPosition.y=y;
+			kropka2Position.x=x2;
+			kropka2Position.y=y2;
+			points++;
 			position.add(new Vector2(position.get(position.size-1).x,position.get(position.size-1).y));
 			
 		}
+		
 	}
 	private void movement() {
 		
@@ -132,8 +159,13 @@ public class Sis extends ApplicationAdapter {
 	public void render () {
 		Gdx.gl.glClearColor(1, 1, 1, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+	
+      
+
 		batch.begin();
 		font.draw(batch, "Witaj w grze SneakIntoScience", 280, 460);
+		font.draw(batch, "Punkty: "+points, 280, 500);
+
 		batch.end();
 		batch.begin();
 		sprite.draw(batch);
@@ -145,6 +177,7 @@ public class Sis extends ApplicationAdapter {
 			batch.draw(glowa, position.get(i).x, position.get(i).y);
 		}
 		batch.draw(kropka, kropkaPosition.x, kropkaPosition.y);
+		batch.draw(kropka2, kropka2Position.x, kropka2Position.y);
 		batch.end();
 		update(Gdx.graphics.getDeltaTime());
 		input();
