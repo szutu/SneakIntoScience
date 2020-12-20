@@ -1,6 +1,7 @@
 package com.mygdx.sis;
 
 import com.badlogic.gdx.ApplicationAdapter;
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -10,17 +11,19 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont; //
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.Input.*;
-//import com.badlogic.gdx.Input.Keys;
+//import com.badlogic.gdx.Input.Keys; 
 import com.badlogic.gdx.Input.TextInputListener;
 import com.badlogic.gdx.utils.Array;
+import com.mygdx.sis.screens.ScreenTample;
 import com.badlogic.gdx.math.Vector2;
 
-public class Sis extends ApplicationAdapter {
+public class Sis extends Game { //akronim nazwy SneakIntoScience, glowna klasa gry 
+	//zamiana extends ApplicationAdapter na Game
 	SpriteBatch batch;
 	Texture img;
 	BitmapFont font;
 	Sprite sprite;
-	TextInputListener listener;
+	//TextInputListener listener;
 	Texture kropka, glowa,kropka2;
 	private Array<Vector2>position;
 	private Vector2 kropkaPosition;
@@ -29,10 +32,13 @@ public class Sis extends ApplicationAdapter {
 	private int num =3;
 	private boolean u,d,r=true,l;
 	private int points =-1;
-	
+	public final static String Screen_name = "SneakIntoScience";
+	private boolean paused;
+	public static float width = 600;
+	public static float height = 600;
 	@Override
 	public void create () {
-		
+		this.setScreen(new ScreenTample(this));
 		batch = new SpriteBatch();
 		img = new Texture("Snake_logo.png");
 		//logo = new Texture("SneakIntoScience_projekt_2.png");
@@ -40,8 +46,8 @@ public class Sis extends ApplicationAdapter {
 		font.setColor(Color.VIOLET);
 		sprite = new Sprite(img);
 		sprite.setPosition(0, 0);
-		listener = new MyTextInputListener();
-		Gdx.input.getTextInput(listener,"Witaj w grze!",null,"Twoje imie");;
+		//listener = new MyTextInputListener();
+		//Gdx.input.getTextInput(listener,"Witaj w grze!",null,"Twoje imie");;
 		glowa = new Texture("glowa.png");
 		kropka = new Texture("kropka.png");
 		kropka2 = new Texture("kropka2.png");
@@ -59,13 +65,7 @@ public class Sis extends ApplicationAdapter {
 		
 	}
 	
-	public class MyTextInputListener implements TextInputListener {
-		   public void input (String text) {
-		   }
-
-		   public void canceled () {
-		   }
-		}
+	
 	
 	private void update(float delta) {
 		timer -=delta;
@@ -185,9 +185,16 @@ public class Sis extends ApplicationAdapter {
 		
 	}
 	
+	// getters and setters
 	@Override
 	public void dispose () {
 		batch.dispose();
 		
+	}
+	public boolean isPaused() {
+		return paused;
+	}
+	public void setPaused(boolean paused) {
+		this.paused = paused;
 	}
 }
