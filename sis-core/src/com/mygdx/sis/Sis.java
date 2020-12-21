@@ -34,13 +34,16 @@ public class Sis extends Game { //akronim nazwy SneakIntoScience, glowna klasa g
 	private float timer=0.1f;
 	private int num =3;
 	private boolean u,d,r=true,l;
-	private int points =-1;
+	private int points =0;
 	public final static String Screen_name = "SneakIntoScience";
 	private boolean paused;
 	public static float width = 600;
 	public static float height = 600;
+	String[] pyt = {"","pytanie 1","pytanie 2","pytanie 3"}; //kończy grę gdy koniec pytan
+	int[] odp = {0,1,2,1}; //ktora odp poprawna 1 lub 2 dla "pyt" o tym samym indeksie
 	@Override
 	public void create () {
+		//String[] pyt = {"pytanie 1","pytanie 2"};
 		this.setScreen(new GameScreen(this));
 		batch = new SpriteBatch();
 		img = new Texture("Snake_logo.png");
@@ -81,6 +84,10 @@ public class Sis extends Game { //akronim nazwy SneakIntoScience, glowna klasa g
 	private void checkDot() {
 		
 		if(position.get(0).x==kropkaPosition.x&&position.get(0).y==kropkaPosition.y) {
+			int numerOdp = 1;
+			
+			if(odp[points+1]==numerOdp) {	
+			
 			int x=(int)(Math.random()*50)*10;
 			int y=(int)(Math.random()*50)*10;
 			int x2=(int)(Math.random()*50)*10;
@@ -90,11 +97,14 @@ public class Sis extends Game { //akronim nazwy SneakIntoScience, glowna klasa g
 			kropka2Position.x=x2;
 			kropka2Position.y=y2;
 			points++;
+			
 			position.add(new Vector2(position.get(position.size-1).x,position.get(position.size-1).y));
-	
+			}
 			
 		}
 		if(position.get(0).x==kropka2Position.x&&position.get(0).y==kropka2Position.y) {
+			int numerOdp = 2;
+			if(odp[points+1]==numerOdp) {
 			int x2=(int)(Math.random()*50)*10;
 			int y2=(int)(Math.random()*50)*10;
 			int x=(int)(Math.random()*50)*10;
@@ -104,10 +114,11 @@ public class Sis extends Game { //akronim nazwy SneakIntoScience, glowna klasa g
 			kropka2Position.x=x2;
 			kropka2Position.y=y2;
 			points++;
-			position.add(new Vector2(position.get(position.size-1).x,position.get(position.size-1).y));
 			
+			position.add(new Vector2(position.get(position.size-1).x,position.get(position.size-1).y));
+			}
 		}
-		
+		//if(pyt.length);
 	}
 	private void movement() {
 		
@@ -182,6 +193,7 @@ public class Sis extends Game { //akronim nazwy SneakIntoScience, glowna klasa g
 		batch.draw(kropka, kropkaPosition.x, kropkaPosition.y);
 		batch.draw(kropka2, kropka2Position.x, kropka2Position.y);
 		font.draw(batch,"Uplynelo: "+elapsedTime, 220, 480);
+		font.draw(batch,"Pytanie: "+pyt[points+1], 220, 440);
 		batch.end();
 		update(Gdx.graphics.getDeltaTime());
 		input();

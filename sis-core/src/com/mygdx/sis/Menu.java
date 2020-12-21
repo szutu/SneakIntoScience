@@ -11,12 +11,14 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.mygdx.sis.screens.GameScreen;
 import com.mygdx.sis.screens.MenuScreen;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Input.TextInputListener;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.Input.*;
 //import com.badlogic.gdx.Input.*;
 public class Menu extends Game {
@@ -27,10 +29,13 @@ public class Menu extends Game {
 	//long elapsedTime = TimeUtils.timeSinceMillis(startTime);
 	//long elapsedtime ;
     private Texture myTexture;
+  //  FileHandle handle = Gdx.files.local("pytania.txt"); //
+  //  String text = handle.readString();					//
     private TextureRegion myTextureRegion;
     private TextureRegionDrawable myTexRegionDrawable;
     private ImageButton button;
     public final static String math = "Matematyka:  Wcisnij \"m\"" ;
+    public String quest ;
     public final static String ang = "Angielski:       Wcisnij \"a\"" ;
     public final static String his = "Historia:         Wcisnij \"h\"" ;
     private float timer=0.1f;
@@ -42,6 +47,7 @@ public class Menu extends Game {
     BitmapFont font;
     Texture img;
     TextInputListener listener;
+  
 	private void update(float delta) {  //CZY POTRZEBNE? WYWOŁANIE W render();
 		timer -=delta;
 		if(timer<=0 ) {
@@ -82,6 +88,9 @@ private void wybor() {
 	}
     @Override
     public void create () {
+    	FileHandle file = Gdx.files.internal("data/pytania.txt");
+    	quest = file.readString();
+    //	Gdx.app.log("Menu",file.readString());
     	this.setScreen(new MenuScreen(this));
     	listener = new MyTextInputListener();
         batch = new SpriteBatch();
@@ -117,9 +126,9 @@ private void wybor() {
 		font.draw(batch,math , 220, 560);
 		font.draw(batch,ang, 220, 540);
 		font.draw(batch,his, 220, 520);
-		font.draw(batch,"wartosc h: "+h, 220, 500);
+		font.draw(batch,"wartosc h: "+quest, 220, 500);
 		//font.draw(batch,"Uplynelo: "+elapsedtime, 220, 480);
-		batch.draw(img, 80,20);
+	//	batch.draw(img, 80,20);
 		batch.end();
 	//	stage.act(Gdx.graphics.getDeltaTime()); //Perform ui logic
 		//stage.draw(); //Draw the ui

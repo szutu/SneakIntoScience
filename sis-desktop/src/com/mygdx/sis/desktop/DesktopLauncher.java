@@ -15,7 +15,7 @@ public class DesktopLauncher {
 	        config.width = 600;			  //
 	        config.height = 600;			 //
 	       new LwjglApplication(new Sis(), config);
-	       new LwjglApplication(new Menu(), config);
+	     //  new LwjglApplication(new Menu(), config);
 	       //config.title = Menu.Screen_name;
 
 	       
