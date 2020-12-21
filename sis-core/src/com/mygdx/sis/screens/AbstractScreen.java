@@ -7,10 +7,12 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
+import com.mygdx.sis.Menu;
 import com.mygdx.sis.Sis;
 
 public abstract class AbstractScreen implements Screen { 
 	protected Sis game;
+	protected Menu menu;
 	protected Stage stage;
 	private OrthographicCamera camera;
 	protected SpriteBatch spriteBatch;
@@ -22,7 +24,13 @@ public abstract class AbstractScreen implements Screen {
 		spriteBatch = new SpriteBatch();									 //
 		Gdx.input.setInputProcessor(stage);									 //
 	}
-	
+	public AbstractScreen(Menu menu) {
+		this.menu = menu;
+		createCamera();
+		stage = new Stage(new StretchViewport(Menu.width,Menu.height,camera)); //
+		spriteBatch = new SpriteBatch();									 //
+		Gdx.input.setInputProcessor(stage);									 //
+	}
 
 
 	private void createCamera() {
@@ -44,9 +52,9 @@ public abstract class AbstractScreen implements Screen {
 	private void clearScreen() {
 		Gdx.gl.glClearColor(0, 0, 0, 0);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		
-		
+			
 	}
+	
 	@Override
 	public void resume() {
 		game.setPaused(false); //gdy wejscie z tła

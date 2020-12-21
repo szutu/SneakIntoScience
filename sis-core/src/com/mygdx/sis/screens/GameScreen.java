@@ -3,11 +3,11 @@ package com.mygdx.sis.screens;
 import com.badlogic.gdx.graphics.Texture;
 import com.mygdx.sis.Sis;
 
-public class ScreenTample extends AbstractScreen{
+public class GameScreen extends AbstractScreen{
 
 	
 	private Texture bad;
-	public ScreenTample(Sis game) {
+	public GameScreen(Sis game) {
 		super(game);
 		init();
 	}

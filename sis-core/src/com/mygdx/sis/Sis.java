@@ -1,6 +1,6 @@
 package com.mygdx.sis;
 
-import com.badlogic.gdx.ApplicationAdapter;
+//import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -12,13 +12,16 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont; //
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.Input.*;
 //import com.badlogic.gdx.Input.Keys; 
-import com.badlogic.gdx.Input.TextInputListener;
+//import com.badlogic.gdx.Input.TextInputListener;
 import com.badlogic.gdx.utils.Array;
-import com.mygdx.sis.screens.ScreenTample;
+import com.badlogic.gdx.utils.TimeUtils;
+import com.mygdx.sis.screens.GameScreen;
 import com.badlogic.gdx.math.Vector2;
 
 public class Sis extends Game { //akronim nazwy SneakIntoScience, glowna klasa gry 
 	//zamiana extends ApplicationAdapter na Game
+	long startTime = TimeUtils.millis();
+	long elapsedTime = TimeUtils.timeSinceMillis(startTime);
 	SpriteBatch batch;
 	Texture img;
 	BitmapFont font;
@@ -38,7 +41,7 @@ public class Sis extends Game { //akronim nazwy SneakIntoScience, glowna klasa g
 	public static float height = 600;
 	@Override
 	public void create () {
-		this.setScreen(new ScreenTample(this));
+		this.setScreen(new GameScreen(this));
 		batch = new SpriteBatch();
 		img = new Texture("Snake_logo.png");
 		//logo = new Texture("SneakIntoScience_projekt_2.png");
@@ -178,6 +181,7 @@ public class Sis extends Game { //akronim nazwy SneakIntoScience, glowna klasa g
 		}
 		batch.draw(kropka, kropkaPosition.x, kropkaPosition.y);
 		batch.draw(kropka2, kropka2Position.x, kropka2Position.y);
+		font.draw(batch,"Uplynelo: "+elapsedTime, 220, 480);
 		batch.end();
 		update(Gdx.graphics.getDeltaTime());
 		input();
