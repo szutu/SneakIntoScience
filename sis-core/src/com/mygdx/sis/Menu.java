@@ -1,7 +1,10 @@
 package com.mygdx.sis;
 
+import java.io.OutputStream;
+
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -35,7 +38,8 @@ public class Menu extends Game {
     private TextureRegionDrawable myTexRegionDrawable;
     private ImageButton button;
     public final static String math = "Matematyka:  Wcisnij \"m\"" ;
-    public String quest ;
+    public String quest=" " ;
+    public String kat;
     public final static String ang = "Angielski:       Wcisnij \"a\"" ;
     public final static String his = "Historia:         Wcisnij \"h\"" ;
     private float timer=0.1f;
@@ -47,11 +51,13 @@ public class Menu extends Game {
     BitmapFont font;
     Texture img;
     TextInputListener listener;
+    double time ;
   
 	private void update(float delta) {  //CZY POTRZEBNE? WYWOŁANIE W render();
 		timer -=delta;
 		if(timer<=0 ) {
 			timer=0.1f;
+			 wybor();//odpowiednik funkcji movement w klasie Sis
 		}
 	}
 	private void input() {
@@ -73,24 +79,36 @@ public class Menu extends Game {
 	}
 private void wybor() {
 		
+	if(m || a || h) {
+		
 	
 		if(m)
 		{
-			
+		 kat ="Wybrałeś kategorie: matematyka";
 		}
 		if(a){
-			
+			 kat ="Wybrałeś kategorie: angielski";
 		}
 		if(h){
-			
+			 kat ="Wybrałeś kategorie: historia";
 		}
+	}
+	else {
+		kat=" jeszcze nie wybrano kategorii";
+	}
+		
 		
 	}
     @Override
     public void create () {
-    	FileHandle file = Gdx.files.internal("data/pytania.txt");
-    	quest = file.readString();
-    //	Gdx.app.log("Menu",file.readString());
+ //   	FileHandle file = Gdx.files.internal("assets/data/pytania.txt");
+   // 	quest = file.readString();
+    //	file =Gdx.files.external("zczytanepytania.dat");
+    //	String wordsArray[] = quest.split("\\r?\\n");
+    //	for (String word: wordsArray) {
+   // 		pytania.add(word);
+  //  	}
+   
     	this.setScreen(new MenuScreen(this));
     	listener = new MyTextInputListener();
         batch = new SpriteBatch();
@@ -98,7 +116,9 @@ private void wybor() {
         font = new BitmapFont();
       // setScreen(new MenuScreen(this));
         img = new Texture("Snake_logo.png");
-    	Gdx.input.getTextInput(listener,"Witaj w grze!",null,"Twoje imie");;
+    	Gdx.input.getTextInput(listener,"Witaj w grze!",null,"Twoje imie");
+    	
+    
     	
     /*   myTexture = new Texture(Gdx.files.internal("Snake_logo.png"));
          myTextureRegion = new TextureRegion(myTexture);
@@ -118,6 +138,8 @@ private void wybor() {
 		   }
 		}
    public void render() {
+		input();
+		wybor();
     	Gdx.gl.glClearColor(1, 0, 1, 0);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		//elapsedtime=(long) ((System.nanoTime()-startTime)/1000000000.0f);
@@ -126,7 +148,8 @@ private void wybor() {
 		font.draw(batch,math , 220, 560);
 		font.draw(batch,ang, 220, 540);
 		font.draw(batch,his, 220, 520);
-		font.draw(batch,"wartosc h: "+quest, 220, 500);
+		font.draw(batch,kat, 220, 500);
+		//font.draw(batch,"wartosc h: "+quest, 220, 500);
 		//font.draw(batch,"Uplynelo: "+elapsedtime, 220, 480);
 	//	batch.draw(img, 80,20);
 		batch.end();

@@ -11,8 +11,9 @@ import com.mygdx.sis.Menu;
 import com.mygdx.sis.Sis;
 
 public abstract class AbstractScreen implements Screen { 
-	protected Sis game;
+	protected Sis game;                  //tutaj ustalam jaka klasa ma rozszerzac screen 
 	protected Menu menu;
+	//protected MenuScreen ms;
 	protected Stage stage;
 	private OrthographicCamera camera;
 	protected SpriteBatch spriteBatch;
@@ -31,6 +32,7 @@ public abstract class AbstractScreen implements Screen {
 		spriteBatch = new SpriteBatch();									 //
 		Gdx.input.setInputProcessor(stage);									 //
 	}
+
 
 
 	private void createCamera() {

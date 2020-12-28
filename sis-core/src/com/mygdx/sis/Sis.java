@@ -22,6 +22,7 @@ public class Sis extends Game { //akronim nazwy SneakIntoScience, glowna klasa g
 	//zamiana extends ApplicationAdapter na Game
 	long startTime = TimeUtils.millis();
 	long elapsedTime = TimeUtils.timeSinceMillis(startTime);
+	private boolean isGameOver=false;
 	SpriteBatch batch;
 	Texture img;
 	BitmapFont font;
@@ -33,14 +34,19 @@ public class Sis extends Game { //akronim nazwy SneakIntoScience, glowna klasa g
 	private Vector2 kropka2Position; //
 	private float timer=0.1f;
 	private int num =3;
+	private boolean isLimit;
 	private boolean u,d,r=true,l;
 	private int points =0;
+	private int questNum =1;
 	public final static String Screen_name = "SneakIntoScience";
 	private boolean paused;
 	public static float width = 600;
 	public static float height = 600;
-	String[] pyt = {"","pytanie 1","pytanie 2","pytanie 3"}; //kończy grę gdy koniec pytan
-	int[] odp = {0,1,2,1}; //ktora odp poprawna 1 lub 2 dla "pyt" o tym samym indeksie
+	public float time =21;
+	String[] pyt = {"Ile to 5+10","ile to 240/12","ile to sqrt(900)","ile to (10^4)^(1/2)"}; //kończy grę gdy koniec pytan
+	int[] odpPoprawna = {1,2,1,2}; //ktora odp poprawna 1 lub 2 dla "pyt" o tym samym indeksie
+	String odp1[] = {"15","25","30","1000"};
+	String odp2[] = {"14","20","35","100",};
 	@Override
 	public void create () {
 		//String[] pyt = {"pytanie 1","pytanie 2"};
@@ -64,7 +70,7 @@ public class Sis extends Game { //akronim nazwy SneakIntoScience, glowna klasa g
 		}
 
 			kropkaPosition = new Vector2(250,250);
-			kropka2Position = new Vector2(50,50);
+			kropka2Position = new Vector2(400,50);
 
 		
 		
@@ -72,11 +78,17 @@ public class Sis extends Game { //akronim nazwy SneakIntoScience, glowna klasa g
 	}
 	
 	
-	
+	private void Limit()
+	{
+		if(pyt.length==points-1) {
+			isLimit = true;
+		}
+	}
 	private void update(float delta) {
 		timer -=delta;
 		if(timer<=0 ) {
 			timer=0.1f;
+			time-=0.1; // zobaczymy czy bedzie poprawnie odejmowac czas
 			movement();
 		}
 		
@@ -86,7 +98,7 @@ public class Sis extends Game { //akronim nazwy SneakIntoScience, glowna klasa g
 		if(position.get(0).x==kropkaPosition.x&&position.get(0).y==kropkaPosition.y) {
 			int numerOdp = 1;
 			
-			if(odp[points+1]==numerOdp) {	
+			if(odpPoprawna[points]==numerOdp) {	
 			
 			int x=(int)(Math.random()*50)*10;
 			int y=(int)(Math.random()*50)*10;
@@ -97,14 +109,21 @@ public class Sis extends Game { //akronim nazwy SneakIntoScience, glowna klasa g
 			kropka2Position.x=x2;
 			kropka2Position.y=y2;
 			points++;
-			
+			questNum++;
+			time= (float) 21; //restart zegara
 			position.add(new Vector2(position.get(position.size-1).x,position.get(position.size-1).y));
 			}
+			else {
+				isGameOver=true;
+				
+			}
+			
+			
 			
 		}
 		if(position.get(0).x==kropka2Position.x&&position.get(0).y==kropka2Position.y) {
-			int numerOdp = 2;
-			if(odp[points+1]==numerOdp) {
+			int numerOdp2 = 2;
+			if(odpPoprawna[points]==numerOdp2) {
 			int x2=(int)(Math.random()*50)*10;
 			int y2=(int)(Math.random()*50)*10;
 			int x=(int)(Math.random()*50)*10;
@@ -114,9 +133,16 @@ public class Sis extends Game { //akronim nazwy SneakIntoScience, glowna klasa g
 			kropka2Position.x=x2;
 			kropka2Position.y=y2;
 			points++;
-			
+			questNum++;
+			time= 21; //restart zegara
 			position.add(new Vector2(position.get(position.size-1).x,position.get(position.size-1).y));
 			}
+			else {
+				isGameOver=true;
+			
+			}
+		
+			
 		}
 		//if(pyt.length);
 	}
@@ -170,7 +196,7 @@ public class Sis extends Game { //akronim nazwy SneakIntoScience, glowna klasa g
 		}
 	}
 	@Override
-	public void render () {
+		public void render () {
 		Gdx.gl.glClearColor(1, 1, 1, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 	
@@ -192,12 +218,29 @@ public class Sis extends Game { //akronim nazwy SneakIntoScience, glowna klasa g
 		}
 		batch.draw(kropka, kropkaPosition.x, kropkaPosition.y);
 		batch.draw(kropka2, kropka2Position.x, kropka2Position.y);
-		font.draw(batch,"Uplynelo: "+elapsedTime, 220, 480);
-		font.draw(batch,"Pytanie: "+pyt[points+1], 220, 440);
+		font.draw(batch,"pozostały czas wynosi:"+(int)time,220,480);//
+		font.draw(batch,"Pytanie nr : "+(int)questNum+": "+pyt[points], 220, 440);
+		font.draw(batch,"czerwony: "+odp1[points], 220, 420);
+		font.draw(batch,"zielony: "+odp2[points], 350, 420);
 		batch.end();
 		update(Gdx.graphics.getDeltaTime());
 		input();
 		checkDot();
+		isTimeOut();
+		setPaused(isGameOver); //to moze kraszowac gre, ostroznie
+		if(isGameOver) {
+			time=0; //zeby czas sie na minusie nie wyswietlał
+			batch.begin();
+			font.draw(batch, "Game Over",220,400);
+			batch.end();
+		}
+		
+	}
+	public void isTimeOut () {
+		if(time<0.1) {
+			isGameOver=true;
+		
+		}
 		
 	}
 	
@@ -207,10 +250,15 @@ public class Sis extends Game { //akronim nazwy SneakIntoScience, glowna klasa g
 		batch.dispose();
 		
 	}
-	public boolean isPaused() {
+	public boolean isPaused() { //aktualnie niepotrzebne, zastępuje go "isGameOver"
 		return paused;
 	}
-	public void setPaused(boolean paused) {
-		this.paused = paused;
+	public void setPaused(boolean IGO) {
+		//this.paused = paused;
+		if(IGO) {
+	//	pause(); //wbudowana funkcja?
+	
+		}
+		
 	}
 }

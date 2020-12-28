@@ -9,7 +9,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mygdx.sis.Menu;
 import com.mygdx.sis.Sis;
 
-public class MenuScreen extends AbstractScreen {
+public class MenuScreen extends AbstractScreen  {
 
 	 SpriteBatch batch;
 	    //ShapeRenderer shapeRenderer;
