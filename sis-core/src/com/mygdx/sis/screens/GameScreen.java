@@ -26,13 +26,13 @@ public class GameScreen extends AbstractScreen{
 		super.render(delta);
 		Gdx.gl.glClearColor(1, 1, 1, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-	batch.begin();
+/*	batch.begin();
 	batch.draw(bad,0,0);
 	batch.end();
 		spriteBatch.begin();
 		spriteBatch.draw(bad,0,0);
 		spriteBatch.end();
-		
+*/		
 	}
 	
 

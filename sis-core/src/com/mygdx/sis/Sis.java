@@ -16,41 +16,47 @@ import com.badlogic.gdx.Input.*;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.mygdx.sis.screens.GameScreen;
+import com.mygdx.sis.screens.MenuScreen;
 import com.badlogic.gdx.math.Vector2;
+import com.mygdx.sis.Menu;
 
 public class Sis extends Game { //akronim nazwy SneakIntoScience, glowna klasa gry 
 	//zamiana extends ApplicationAdapter na Game
 	long startTime = TimeUtils.millis();
 	long elapsedTime = TimeUtils.timeSinceMillis(startTime);
-	private boolean isGameOver=false;
+	protected boolean isGameOver=false;
 	SpriteBatch batch;
 	Texture img;
-	BitmapFont font;
-	Sprite sprite;
+	protected BitmapFont font;
+	protected Sprite sprite;
 	//TextInputListener listener;
-	Texture kropka, glowa,kropka2;
-	private Array<Vector2>position;
-	private Vector2 kropkaPosition;
-	private Vector2 kropka2Position; //
+	protected Texture kropka;
+	protected Texture glowa;
+	protected Texture kropka2;
+	protected Array<Vector2>position;
+	protected Vector2 kropkaPosition;
+	protected Vector2 kropka2Position; //
 	private float timer=0.1f;
 	private int num =3;
 	private boolean isLimit;
 	private boolean u,d,r=true,l;
-	private int points =0;
-	private int questNum =1;
+	protected int points =0;
+	protected int questNum =1;
 	public final static String Screen_name = "SneakIntoScience";
 	private boolean paused;
 	public static float width = 600;
 	public static float height = 600;
 	public float time =21;
-	String[] pyt = {"Ile to 5+10","ile to 240/12","ile to sqrt(900)","ile to (10^4)^(1/2)"}; //kończy grę gdy koniec pytan
+	public boolean timeOut;
+	protected String[] pyt = {"Ile to 5+10","ile to 240/12","ile to sqrt(900)","ile to (10^4)^(1/2)"}; //kończy grę gdy koniec pytan
 	int[] odpPoprawna = {1,2,1,2}; //ktora odp poprawna 1 lub 2 dla "pyt" o tym samym indeksie
-	String odp1[] = {"15","25","30","1000"};
-	String odp2[] = {"14","20","35","100",};
+	protected String odp1[] = {"15","25","30","1000"};
+	protected String odp2[] = {"14","20","35","100",};
 	@Override
 	public void create () {
+		this.setScreen(new GameScreen(this)); //wywolanie screenu GameScreen
 		//String[] pyt = {"pytanie 1","pytanie 2"};
-		this.setScreen(new GameScreen(this));
+	//	this.setScreen(new GameScreen(this));
 		batch = new SpriteBatch();
 		img = new Texture("Snake_logo.png");
 		//logo = new Texture("SneakIntoScience_projekt_2.png");
@@ -84,7 +90,7 @@ public class Sis extends Game { //akronim nazwy SneakIntoScience, glowna klasa g
 			isLimit = true;
 		}
 	}
-	private void update(float delta) {
+	protected void update(float delta) {
 		timer -=delta;
 		if(timer<=0 ) {
 			timer=0.1f;
@@ -93,7 +99,7 @@ public class Sis extends Game { //akronim nazwy SneakIntoScience, glowna klasa g
 		}
 		
 	}
-	private void checkDot() {
+	protected void checkDot() {
 		
 		if(position.get(0).x==kropkaPosition.x&&position.get(0).y==kropkaPosition.y) {
 			int numerOdp = 1;
@@ -147,12 +153,21 @@ public class Sis extends Game { //akronim nazwy SneakIntoScience, glowna klasa g
 		//if(pyt.length);
 	}
 	private void movement() {
+	//	if(!isGameOver || !timeOut) {
+			//waz zastyga gdy game over
+		
 		
 		for(int i=position.size-1;i>0;i--) {
 			position.get(i).x=position.get(i-1).x;
 			position.get(i).y=position.get(i-1).y;
 		}
+		if(isGameOver || timeOut) {
+		//	//waz znika w kropce
+		}
 		
+		
+			
+		else {
 		if(u)
 		{
 			position.get(0).y+=10;
@@ -166,9 +181,11 @@ public class Sis extends Game { //akronim nazwy SneakIntoScience, glowna klasa g
 		if(l){
 			position.get(0).x-=10;
 		}
+		} //dla else w wersji ze znikajacym wezem 
+		//}
 	}
 	
-	private void input() {
+	protected void input() {
 		if(Gdx.input.isKeyJustPressed(Keys.UP)) {
 			u=true;
 			d=false;
@@ -197,6 +214,8 @@ public class Sis extends Game { //akronim nazwy SneakIntoScience, glowna klasa g
 	}
 	@Override
 		public void render () {
+		
+	   	super.render(); //wywołuje przywołany tutaj: "this.setScreen(new GameScreen(this));" screen
 		Gdx.gl.glClearColor(1, 1, 1, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 	
@@ -222,27 +241,33 @@ public class Sis extends Game { //akronim nazwy SneakIntoScience, glowna klasa g
 		font.draw(batch,"Pytanie nr : "+(int)questNum+": "+pyt[points], 220, 440);
 		font.draw(batch,"czerwony: "+odp1[points], 220, 420);
 		font.draw(batch,"zielony: "+odp2[points], 350, 420);
+	//	font.draw(batch,"zielony: "+Menu.currentquest[points], 350, 400); //testowo, najpierw musi dzialac klasa Menu() aby currentquest nie byl pusty; 
 		batch.end();
 		update(Gdx.graphics.getDeltaTime());
 		input();
 		checkDot();
+		//isTimeOut();
+	//	setPaused(isGameOver); //to moze kraszowac gre, ostroznie
 		isTimeOut();
-		setPaused(isGameOver); //to moze kraszowac gre, ostroznie
-		if(isGameOver) {
+		
+	}
+	public void isTimeOut () {
+		if(time<0.1 &&!isGameOver) {
+			//isGameOver=true;
+			timeOut=true;
+		time=0;
+			batch.begin();
+			font.draw(batch, "Time is Over!",220,300);
+			batch.end();		
+		}
+		else if(isGameOver) { //gdy isGameOver=true z powodu zlej odp 
 			time=0; //zeby czas sie na minusie nie wyswietlał
 			batch.begin();
 			font.draw(batch, "Game Over",220,400);
 			batch.end();
 		}
-		
-	}
-	public void isTimeOut () {
-		if(time<0.1) {
-			isGameOver=true;
-		
 		}
-		
-	}
+	
 	
 	// getters and setters
 	@Override
