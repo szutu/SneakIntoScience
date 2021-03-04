@@ -1,0 +1,37 @@
+package com.mygdx.game;
+
+import com.badlogic.gdx.Game;
+import com.mygdx.game.screens.GameScreen;
+import com.mygdx.game.screens.MenuScreen;
+/**
+ * This class create an instance of classes (Menu and Sis) and set Screen.
+ * @author Jakub Szutenberg 172434 G3
+ */
+public class Mygame extends Game {
+	//Screens
+    public GameScreen gamescreen; 
+    public MenuScreen menuscreen;
+    //Classes
+    public Sis game;
+    public Menu menu;
+ /**
+  * this method create instances of classes required in the game
+  */
+    public void create() {
+    	  menu=new Menu();
+    	  game=new Sis();
+    	  menuscreen=new MenuScreen(menu);
+    	  gamescreen=new GameScreen(game);
+          menu.create();
+    	  menu.render();
+    	  game.create();
+    	  this.setScreen(menuscreen);	  
+    }
+    /**
+     * this method calls render from Menu class and set screen to MenuScreen
+     */
+    public void render() {
+    	menu.render();  	
+    	this.setScreen(menuscreen);
+    }
+}
