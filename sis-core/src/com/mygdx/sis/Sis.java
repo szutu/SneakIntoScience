@@ -1,325 +1,316 @@
 package com.mygdx.game;
 
-import java.awt.Font;
-
-//import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-//import com.badlogic.gdx.graphics.g3d.particles.ResourceData.AssetData;
-import com.badlogic.gdx.graphics.g2d.BitmapFont; //
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.Input.*;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.files.FileHandle;
-//import com.badlogic.gdx.Input.Keys; 
-//import com.badlogic.gdx.Input.TextInputListener;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.TimeUtils;
-import com.mygdx.game.screens.GameScreen;
-import com.mygdx.game.screens.MenuScreen;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont; 
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
-import com.mygdx.game.Menu;
-
+import com.badlogic.gdx.utils.Array;
+import com.mygdx.game.screens.GameScreen;
+/**
+ * this class contain the whole mechanics of the game
+ * @author Jakub Szutenberg 172434 G3 
+ *
+ */
 public class Sis extends Game { 
-	long startTime = TimeUtils.millis();
-	long elapsedTime = TimeUtils.timeSinceMillis(startTime);
-	protected boolean isGameOver=false;
+	protected boolean isGameOver = false; 
 	public SpriteBatch batch;
 	public Texture background;
 	protected BitmapFont font;
 	protected Sprite sprite;
 	public Sound getPoint;
 	public Sound lostGame;
+	public Sound victory;
 	public Texture win;
-	public Texture kropka;
-	public Texture glowa;
+	public Texture dot;
+	public Texture head;
 	public Texture endGame;
-	public Texture kropka2;
+	public Texture timeEnd;
+	public Texture dot2;
 	public Array<Vector2>position;
-	protected Vector2 kropkaPosition;
-	protected Vector2 kropka2Position; //
+	protected Vector2 dotPosition;
+	protected Vector2 dot2Position; 
 	public float timer=0.1f;
-	public int num =3;// początkowa długość węża
+	public int initialSnakeLong=3;// initial snake long
 	public boolean isLimit;
-	public boolean u,d,r=true,l;
+	public boolean up,down,right=true,left; 
 	protected int points =0;
-	public int questNum =1;
-	public int prevQ =1;
-	public final static String Screen_name = "SneakIntoScience";
+	public int questNumber =1;
+	public int previousQuestion =1; 
 	public boolean paused;
-	public static float width = 600;
-	public static float height = 600;
-	public float time =21;
+	public static float WIDTH = 600; 
+	public static float HEIGHT = 600;
+	public float timeLeft =21; //timeLeft
 	public boolean timeOut;
 	public boolean played =false;
-	//protected String[] pyt = {"Ile to 5+10","ile to 240/12","ile to sqrt(900)","ile to (10^4)^(1/2)"}; //kończy grę gdy koniec pytan
-	int[] odpPoprawna = {1,2,1,2}; //ktora odp poprawna 1 lub 2 dla "pyt" o tym samym indeksie
-	protected String odp1[] = {"15","25","30","1000"};
-	int[] odpPoprawnaA = {1,2,1,2,1,2,1,2,1,2,1}; //testowo
-	protected String odpA1[] = {"good","bad","good","bad","good","bad","good","bad","good","bad","good"}; //testowo
-	protected String odpA2[] = {"bad","good","bad","good","bad","good","bad","good","bad","good","bad"};  //testowo
-	protected String odp2[] = {"14","20","35","100",};
-	public Menu menu; //obiekt klasy menu?
+	public boolean stopGame;
+	public String correctAnswer[];
+	protected String answer1[]; 
+	protected String answer2[];
+	public Menu menu;
 	public GameScreen gamescreen;
+	public String questions[];
+	public String quests;
+	public boolean isRestart;
+	/**
+	 * create objects which are used in this class
+	 */
 	@Override
 	public void create () {
-		menu = new Menu();
+		menu = new Menu(); 
 		gamescreen= new GameScreen(this);
 		this.setScreen(gamescreen);
 		batch = new SpriteBatch();
 		getPoint = Gdx.audio.newSound(Gdx.files.internal("data/gp.mp3"));
 		lostGame = Gdx.audio.newSound(Gdx.files.internal("data/lostGame.mp3"));
-		//logo = new Texture("SneakIntoScience_projekt_2.png");
+		victory = Gdx.audio.newSound(Gdx.files.internal("data/victory.mp3"));
 		font = new BitmapFont();
 		font.setColor(Color.BLACK);
 		background = new Texture("sis_bg.png"); //background
-		//listener = new MyTextInputListener();
-		//Gdx.input.getTextInput(listener,"Witaj w grze!",null,"Twoje imie");;
-		glowa = new Texture("glowa.png");
-		kropka = new Texture("kropka.png");
-		kropka2 = new Texture("kropka2.png");
+		head = new Texture("glowa.png");
+		dot = new Texture("kropka.png");
+		dot2 = new Texture("kropka2.png");
 		win=new Texture("win.png");
 		position = new Array<Vector2>();
-		for (int i=0;i<num;i++) {
-			
-			position.add(new Vector2(50+i*10, 50)); //poczatkowe inicjowanie weza 
+		for (int i=0;i<initialSnakeLong;i++) {	
+			position.add(new Vector2(50+i*10, 50)); //initiation of the snake 
 		}
-
-			kropkaPosition = new Vector2(250,250);
-			kropka2Position = new Vector2(400,50);			
+			dotPosition = new Vector2(250,250);
+			dot2Position = new Vector2(400,50);			
 	}
-	
-	
-	private void Limit()
+	/**
+	 * this method import selected chapter from class Menu
+	 * @param answer1 : answer one 
+	 * @param answer2 : answer two
+	 * @param goodAnswer :show which answer from above is correct
+	 */
+	public void setAnswer(String answer1[],String answer2[], String goodAnswer[]) {
+		this.answer1=answer1;
+		this.answer2=answer2;
+		this.correctAnswer=goodAnswer;
+	}
+	/**
+	 * this method import questions from class Menu 
+	 * @param question : this is imported table of questions
+	 */
+	public void setQuestion(String question[]) {
+		this.questions=question;
+	}
+	/**
+	 * this method check if the limit of points is reached
+	 */
+	public void Limit()
 	{
-		if(menu.currentquest.length==points+2) {
+		if(12==points+1) {
 			isLimit = true;
 		}
 	}
-	
+	/**
+	 * this method update time and method movement 
+	 * @param delta : this is a value of time to be subtracted
+	 */
 	public void update(float delta) {
+		if(!stopGame) {
 		timer -=delta;
 		if(timer<=0 ) {
 			timer=0.1f;
-			time-=0.1; 
+			timeLeft-=0.1; 
 			movement();
-			
+		}
 		}				
 	}
-	
-	public void checkDot() {
-		
-		if(position.get(0).x==kropkaPosition.x&&position.get(0).y==kropkaPosition.y) {
-			int numerOdp = 1;
-			
-			if(odpPoprawnaA[points]==numerOdp) {	
-			
-			int x=(int)(Math.random()*50)*10;
-			int y=(int)(Math.random()*40)*10;
-			int x2=(int)(Math.random()*50)*10;
-			int y2=(int)(Math.random()*40)*10;
-			kropkaPosition.x=x;
-			kropkaPosition.y=y;
-			kropka2Position.x=x2;
-			kropka2Position.y=y2;
-			points++;
-			questNum++;
-			time= (float) 21; //restart zegara
-			position.add(new Vector2(position.get(position.size-1).x,position.get(position.size-1).y)); //aktualizacja dlugosci weza
-			}
-			
+	/**
+	 * this method check if user selected correct answer 
+	 */
+	public void checkDot() {		
+		if(position.get(0).x==dotPosition.x&&position.get(0).y==dotPosition.y) {
+			String answerId = "1";			
+			if(correctAnswer[points].compareTo(answerId) ==0) {				
+				setNextRound(); 
+			}			
 			else {
 				isGameOver=true;
 			}			
-		}
-		
-		if(position.get(0).x==kropka2Position.x&&position.get(0).y==kropka2Position.y) {
-			int numerOdp2 = 2;
-			if(odpPoprawnaA[points]==numerOdp2) {
-			int x2=(int)(Math.random()*50)*10; 
-			int y2=(int)(Math.random()*40)*10; 
-			int x=(int)(Math.random()*50)*10;
-			int y=(int)(Math.random()*40)*10;  
-			kropkaPosition.x=x;
-			kropkaPosition.y=y;
-			kropka2Position.x=x2;
-			kropka2Position.y=y2;
-			points++;
-			questNum++;
-			time= 21; //restart zegara
-			position.add(new Vector2(position.get(position.size-1).x,position.get(position.size-1).y)); //aktualizacja dlugosci weza
-			}
-			
+		}		
+		if(position.get(0).x==dot2Position.x&&position.get(0).y==dot2Position.y) {
+			String answerId2 = "2";
+			if(correctAnswer[points].compareTo(answerId2)==0) {
+				setNextRound(); 
+			}		
 			else {
 				isGameOver=true;			
 			}			
 		}		
 	}
-	
+	/**
+	 * this method initiate another round if user got point
+	 */
+	public void setNextRound() {
+		int x2=(int)(Math.random()*50)*10; 
+		int y2=(int)(Math.random()*40)*10; 
+		int x=(int)(Math.random()*50)*10;
+		int y=(int)(Math.random()*40)*10;  
+		dotPosition.x=x;
+		dotPosition.y=y;
+		dot2Position.x=x2;
+		dot2Position.y=y2;
+		points++;
+		questNumber++;
+		played=false;
+		timeLeft= 21; //restart of the clock 
+		position.add(new Vector2(position.get(position.size-1).x,position.get(position.size-1).y));
+	}
+	/**
+	 * this method make snake unable to leave specified area
+	 */
 	public void limitArea() {
 		if(position.get(0).x==-10) {
-			u=false;
-			d=false;
-			r=true;
-			l=false;
+			up=false;
+			down=false;
+			right=true;
+			left=false;
 		}
 		if(position.get(0).x==610) {
-			u=false;
-			d=false;
-			r=false;
-			l=true;
-			
-		}
-		
+			up=false;
+			down=false;
+			right=false;
+			left=true;		
+		}		
 		if(position.get(0).y==-10) {
-			u=true;
-			d=false;
-			r=false;
-			l=false;
+			up=true;
+			down=false;
+			right=false;
+			left=false;
 		}
 		if(position.get(0).y==410) {
-			u=false;
-			d=true;
-			r=false;
-			l=false;
+			up=false;
+			down=true;
+			right=false;
+			left=false;
 		}
 	}
-	
-	public void movement() {
-		
+	/**
+	 * this method is responsible for snake movement
+	 */
+	public void movement() {	
 		for(int i=position.size-1;i>0;i--) {
 			position.get(i).x=position.get(i-1).x;
 			position.get(i).y=position.get(i-1).y;
 		}		
-		limitArea(); // ograniczenie poruszania sie w zakresie ekranu
-		sneakPosition();
-
+		limitArea();  
+		snakePosition();
 	}
-	public void sneakPosition() {
+	/**
+	 * this method determine snake position depending on the input value 
+	 */
+	public void snakePosition() {
 		if((isGameOver || timeOut ||isLimit)) {
-			//waz znika w kropce, brak instrukcji dla odswiezania pozycji weza	
-		}
-					
+			//snake disappear in (getting small as one dot)
+		}					
 		else {
-		if(u)
+		if(up)
 		{
 			position.get(0).y+=10;
 		}
-		if(d){
+		if(down){
 			position.get(0).y-=10;
 		}
-		if(r){
+		if(right){
 			position.get(0).x+=10;
 		}
-		if(l){
+		if(left){
 			position.get(0).x-=10;
 		}
 		} 
 	}
+	/**
+	 * this method listen to user inputs and assigns appropriate values depending on the input value 
+	 */
 	public void input() {
 		if(Gdx.input.isKeyJustPressed(Keys.UP)) {
-			u=true;
-			d=false;
-			r=false;
-			l=false;
-		}
-		
+			up=true;
+			down=false;
+			right=false;
+			left=false;
+			
+		}		
 		if(Gdx.input.isKeyJustPressed(Keys.DOWN)) {
-			u=false;
-			d=true;
-			r=false;
-			l=false;
+			up=false;
+			down=true;
+			right=false;
+			left=false;
 		}
 		if(Gdx.input.isKeyJustPressed(Keys.LEFT)) {
-			u=false;
-			d=false;
-			r=false;
-			l=true;
+			up=false;
+			down=false;
+			right=false;
+			left=true;
 		}
 		if(Gdx.input.isKeyJustPressed(Keys.RIGHT)) {
-			u=false;
-			d=false;
-			r=true;
-			l=false;
+			up=false;
+			down=false;
+			right=true;
+			left=false;
 		}
+		if(Gdx.input.isKeyJustPressed(Keys.ESCAPE)) {
+			stopGame=true;
+		}
+		if(Gdx.input.isKeyJustPressed(Keys.ENTER)) {
+			stopGame=false;
+		}
+		if((Gdx.input.isKeyJustPressed(Keys.R))&&(isGameOver||isLimit||timeOut)) {
+			stopGame=false;
+			isRestart=true;
+		}	
 	}
-	
+	/**
+	 * this method render game on screen, in this case method render() call render() from class GameScreen
+	 */
 		public void render () {
-	   	super.render(); //wywołuje przywołany tutaj: "this.setScreen(new GameScreen(this));" screen
-	   	
-/*	   //stary render gdy nie bylo jeszcze screenow
-		Gdx.gl.glClearColor(1, 1, 1, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		showGame();
-		update(Gdx.graphics.getDeltaTime());
-		input();
-		checkDot();
-		//isTimeOut();
-	//	setPaused(isGameOver); //to moze kraszowac gre, ostroznie
-		isTimeOut();
-		playSounds(questNum);	
-*/	
+	   	super.render(); //calls render from screen GameScreen   	
 	}
+		/**
+		 * this method is responsible for what is displayed on the screen
+		 */
 	public void showGame() {
 		drawBackground();
 		fontColorSetter();
 		drawRound();
 	}
-	
+	/**
+	 * this method draw current round 
+	 */
 	public void drawRound() {
 		batch.begin();
 		for(int i=0; i<position.size;i++ ) {	
-			batch.draw(glowa, position.get(i).x, position.get(i).y);
-		}
-		
+			batch.draw(head, position.get(i).x, position.get(i).y);
+		};
 		font.draw(batch, "Witaj w grze SneakIntoScience", 200, 590); //
 		font.draw(batch, "Punkty: "+points, 515, 590);  //
-		batch.draw(kropka, kropkaPosition.x, kropkaPosition.y);
-		batch.draw(kropka2, kropka2Position.x, kropka2Position.y);
-		font.draw(batch,"pozostały czas: "+(int)time,10,590);//
-		//font.draw(batch,"Pytanie nr : "+(int)questNum+": "+pyt[points], 220, 570); //stara wersja pytan z Sis nie z Menu
-		batch.draw(kropka,200,528);
-		font.draw(batch,"czerwony: "+odpA1[points], 220, 540);
-		batch.draw(kropka2,330,528);
-		font.draw(batch,"zielony: "+odpA2[points], 350, 540);
+		batch.draw(dot, dotPosition.x, dotPosition.y);
+		batch.draw(dot2, dot2Position.x, dot2Position.y);
+		font.draw(batch,"pozostaly czas: "+(int)timeLeft,10,590);//
 		getSelectedChapter();
-		batch.end();
-		
+		batch.end();		
 	}
-	public void wybor() {  //testowo (nie dziala) analogicznie wybor jak w Menu ,bo nie przesyla wybranego dzialu do Sis
-		
-		if(menu.m || menu.a || menu.h) {		
-		
-			if(menu.m)
-			{
-			 menu.sciezka="data/pytaniaM.txt";			 			 			
-			}
-			if(menu.a){	
-				 menu.sciezka="data/pytaniaA.txt";
-			}
-			
-			if(menu.h){
-				 menu.sciezka="data/pytaniaH.txt";	
-			}
-		}
-	}
-	
-    public void category() {	//testowo
-    	FileHandle file = Gdx.files.internal(menu.sciezka);
- 	   	menu.quests = file.readString();
- 	   	menu.currentquest = menu.quests.split(System.getProperty("line.separator"));
-    }
+	/**
+	 * this method draw Q&A of current round
+	 */
 	public void getSelectedChapter() {
-		category();
-		wybor();
-		font.draw(batch,"pytanie wybrane z menu: "+menu.currentquest[points], 350, 400);
+	font.draw(batch,"pytanie nr:  "+questions[points], 100, 540);
+	batch.draw(dot,100,488);
+	font.draw(batch,"czerwony: "+answer1[points], 120, 500);
+	batch.draw(dot2,370,488);
+	font.draw(batch,"zielony: "+answer2[points], 390, 500);
 	}
-	
+	/**
+	 * this method set the background image
+	 */
 	public void drawBackground() {
 		sprite = new Sprite(background);	
 		sprite.setPosition(0, 0);
@@ -327,83 +318,125 @@ public class Sis extends Game {
 		sprite.draw(batch);
 		batch.end();
 	}
-	
+	/**
+	 * this method determine font color depending on the timeLeft
+	 */
 	public void fontColorSetter() {
-		if((int)time<6) {
+		if((int)timeLeft<6) {
 			font.setColor(Color.RED);
 		}
-		if((int)time>20) {
+		if((int)timeLeft>20) {
 			font.setColor(Color.BLACK);
 		}
 	}
-	
+	/**
+	 * this method show timeOut message when time is out 
+	 */
+	public void drawTimeOut() {
+		batch.begin();
+		timeEnd = new Texture("timeOver.png");
+		sprite = new Sprite(timeEnd);
+		sprite.setSize(400, 400);
+		sprite.setPosition(75,15);
+		sprite.draw(batch);
+		batch.end();
+	}
+	/**
+	 * this method determine what happen in cases of end game
+	 */
 	public void isTimeOut () {
 		Limit();
-		if(time<0.1 &&!isGameOver) {
+		if(timeLeft<0.1 &&!isGameOver) { //when user lost due to time out 
+			timeLeft=0;
 			timeOut=true;
-			time=0;
-			batch.begin();
-			font.draw(batch, "Time is Over!",220,300);
-			batch.end();		
+			drawTimeOut();		
 		}
-		else if(isGameOver) { //gdy isGameOver=true z powodu zlej odp 
-			time=0; //zeby czas sie na minusie nie wyswietlał
+		else if(isGameOver&&!timeOut) { //when user lost due to wrong answer
+			timeLeft=0; 
 			endGame = new Texture("gameover2.png");
 			sprite = new Sprite(endGame);
 			batch.begin();
 			sprite.setSize(400, 400);
 			sprite.setPosition(75,75);
 			sprite.draw(batch);
-			
 			batch.end();
 			
-		}
-		if(isLimit) {
-			
-			//font.draw(batch," Wygrales",200,200);
+		}	
+		else if(isLimit) {		//when user win due to reach limit of points
 			sprite = new Sprite(win);
 			batch.begin();
 			sprite.setSize(420, 380);
 			sprite.setPosition(75,75);
 			sprite.draw(batch);
-			batch.end();
+			batch.end();		
+		}	
+		restart();
 		}
-		}
-	
-	
-	// getters and setters
+	/**
+	 * this method restart the game by zeroing variables or setting their initial values
+	 */
+	public void restart() {
+		 if(isRestart&&isGameOver) { 
+			timeLeft=21; 
+			points=0;
+			initialSnakeLong=3;
+			isGameOver=false;
+			isRestart=false;
+			isLimit=false;
+			played=false;
+			timeOut=false;
+			movement();
+			fontColorSetter();		
+	}
+		 else if(isRestart&&timeOut) {
+				timeLeft=21; 
+				points=0;
+				initialSnakeLong=3;
+				isGameOver=false;
+				isRestart=false;
+				isLimit=false;
+				played=false;
+				timeOut=false;
+				movement();
+				fontColorSetter();	
+		 }
+		 else if(isRestart&&isLimit) {
+				timeLeft=21; 
+				points=0;
+				initialSnakeLong=3;
+				isGameOver=false;
+				isRestart=false;
+				isLimit=false;
+				played=false;
+				timeOut=false;
+				movement();
+				fontColorSetter();	
+		 }
+	}
+	/**
+	 * this method dispose sounds
+	 */
 	@Override
 	public void dispose () {
 		lostGame.dispose();
-		getPoint.dispose();
-		
+		getPoint.dispose();		
 	}
-	public boolean isPaused() { //aktualnie niepotrzebne, zastępuje go "isGameOver"
-		return paused;
-	}
-	public void setPaused(boolean IGO) {
-		//this.paused = paused;
-		if(IGO) {
-		this.pause(); //wbudowana funkcja?
-	
-		}
-		
-	}
+	/**
+	 * this method determine which sound should be played
+	 * @param x :show what is current quest number
+	 */
 	public void playSounds(int x) {
-		
-		if((isGameOver || timeOut)&&!played) {
-	
-				
-				lostGame.play(50,2,0);
-				played =true;
-			//	setPaused(isGameOver);	
-
-			}
-		
-		
-		if(prevQ<x) {
+		if((isGameOver || timeOut)&&!played) {	
+			lostGame.play(50,2,0);
+			played =true;
+			}	
+		if((isLimit)&&!played) {	
+			victory.play(50,2,0);
+			played =true;
+		}		
+		if((previousQuestion<x)&&!played) {
 			getPoint.play();
+			played=true;
 		}
-		prevQ=x;
 	}
 }
